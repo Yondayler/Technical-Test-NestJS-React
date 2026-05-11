@@ -1,0 +1,43 @@
+# Dependencias
+node_modules/
+app/backend/node_modules/
+app/frontend/node_modules/
+
+# Archivos compilados y builds
+dist/
+app/backend/dist/
+app/frontend/dist/
+build/
+*.tsbuildinfo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variables de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos del Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Herramientas de IA y Agentes (carpetas de configuración local)
+.agents/
+skills-lock.json
+.gemini/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
