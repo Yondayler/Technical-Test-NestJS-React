@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { LayoutProps, SortKey } from '../types';
 import { YouTubeCard, YouTubeSkeletonCard } from './YouTubeCard';
 import './youtube.css';

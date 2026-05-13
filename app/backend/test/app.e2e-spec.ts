@@ -1,4 +1,9 @@
-import { ClassSerializerInterceptor, INestApplication, ValidationPipe } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/unbound-method */
+import {
+  ClassSerializerInterceptor,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
@@ -19,8 +24,12 @@ describe('Videos API (e2e)', () => {
 
     // Replicar la configuración global de main.ts para que los tests
     // sean fieles al comportamiento real de la aplicación.
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, transform: true }),
+    );
+    app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get(Reflector)),
+    );
 
     await app.init();
   });
@@ -74,7 +83,9 @@ describe('Videos API (e2e)', () => {
         .get('/api/videos')
         .expect(200)
         .expect((res) => {
-          const hypes: number[] = res.body.map((v: { hypeLevel: number }) => v.hypeLevel);
+          const hypes: number[] = res.body.map(
+            (v: { hypeLevel: number }) => v.hypeLevel,
+          );
           for (let i = 1; i < hypes.length; i++) {
             expect(hypes[i]).toBeLessThanOrEqual(hypes[i - 1]);
           }
@@ -86,7 +97,9 @@ describe('Videos API (e2e)', () => {
         .get('/api/videos?sort=hype-asc')
         .expect(200)
         .expect((res) => {
-          const hypes: number[] = res.body.map((v: { hypeLevel: number }) => v.hypeLevel);
+          const hypes: number[] = res.body.map(
+            (v: { hypeLevel: number }) => v.hypeLevel,
+          );
           for (let i = 1; i < hypes.length; i++) {
             expect(hypes[i]).toBeGreaterThanOrEqual(hypes[i - 1]);
           }

@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
-import type { LayoutProps, SortKey } from '../types';
+import type { LayoutProps, SortKey, StyleKey } from '../types';
 import { VideoCard, CrownCard, SkeletonCard } from '../../components/VideoCard';
 
 // ── Título animado letra por letra ────────────────────────────
@@ -60,12 +60,12 @@ function MoonIcon() {
   );
 }
 
-const STYLES: { value: 'minimalist' | 'youtube'; label: string; emoji: string }[] = [
+const STYLES: { value: StyleKey; label: string; emoji: string }[] = [
   { value: 'minimalist', label: 'Minimalist', emoji: '✦' },
   { value: 'youtube',    label: 'YouTube',    emoji: '▶' },
 ];
 
-function StyleSwitcher({ styleKey, onChange }: { styleKey: string; onChange: (s: string) => void }) {
+function StyleSwitcher({ styleKey, onChange }: { styleKey: StyleKey; onChange: (s: StyleKey) => void }) {
   return (
     <div className="style-switcher" role="group" aria-label="Seleccionar estilo visual">
       {STYLES.map((s) => (
@@ -133,7 +133,7 @@ function SortBar({ sort, onSort, search, onSearch, total }: SortBarProps) {
           <button
             key={opt.value}
             className={`sort-btn ${sort === opt.value ? 'sort-btn--active' : ''}`}
-            onClick={() => onSort(opt.value)}
+            onClick={() => onSort(opt.value as SortKey)}
             aria-pressed={sort === opt.value}
           >
             {opt.label}

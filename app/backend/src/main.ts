@@ -17,9 +17,9 @@ async function bootstrap() {
   // y la API acepta cualquier valor en los query params.
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,        // elimina propiedades no declaradas en el DTO
+      whitelist: true, // elimina propiedades no declaradas en el DTO
       forbidNonWhitelisted: false, // no rechazar props extras, solo ignorarlas
-      transform: true,        // convierte tipos automáticamente (string → enum)
+      transform: true, // convierte tipos automáticamente (string → enum)
     }),
   );
 

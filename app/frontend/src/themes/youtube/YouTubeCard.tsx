@@ -1,4 +1,4 @@
-import React from 'react';
+
 import type { Video } from '../../types/video';
 
 interface YouTubeCardProps {
