@@ -16,9 +16,12 @@ El backend actúa como un colador: recibe el payload ruidoso del mock de YouTube
 
 Elegí organizar el código en un módulo `videos/` que contiene su propio controller, service, DTO e interfaces, en lugar de separar por capas (`controllers/`, `services/`). Esta estructura escala mejor porque toda la lógica relacionada con videos vive junta. Siguiendo el principio de cohesión del NestJS Style Guide oficial.
 
-**DTO con `class-transformer`**
+**DTO con `class-transformer` + `ValidationPipe` global**
 
 Usé `@Exclude()` y `@Expose()` en `VideoResponseDto` para garantizar que el payload de YouTube nunca "se filtre" accidentalmente al cliente. El contrato de la API está definido explícitamente en el DTO, no implícito en lo que el servicio decida devolver.
+
+Los DTOs de entrada (`VideoQueryDto`) usan decoradores de `class-validator` (`@IsIn`, `@IsString`, `@IsOptional`) para declarar las restricciones. Sin embargo, estos decoradores son **inerte sin un `ValidationPipe` activo** — NestJS no los ejecuta automáticamente. Por eso registré `ValidationPipe` globalmente en el bootstrap con `whitelist: true` (descarta propiedades no declaradas en el DTO) y `transform: true` (coerce de string a los tipos correctos). Esto hace que la API rechace un `sort=valor_inventado` con un 400 bien formado en lugar de silenciosamente ignorarlo, lo cual es el comportamiento correcto para una API de producción.
+
 
 **Detección de comentarios desactivados**
 
@@ -50,7 +53,7 @@ Implementé el toggle usando `data-theme` en el `<html>` y un juego de variables
 
 Newsreader (serif) para el título editorial, Geist (sans-serif de Vercel) para la UI, y Geist Mono para datos numéricos. Diferencia la jerarquía de información visualmente sin requerir CSS adicional.
 
-**Fallback de thumbnails con `picsum.photos`**
+**Reemplazo de thumbnails rotos con `placehold.co`**
 
 El mock de YouTube utiliza URLs de `via.placeholder.com` como miniaturas de prueba. Tras investigarlo, confirmé que **`via.placeholder.com` fue dado de baja definitivamente** — el servicio está desconectado y sus URLs ya no resuelven. Esto no es un fallo intermitente, es una condición permanente del dataset de prueba.
 
@@ -80,11 +83,15 @@ Se incluye una configuración completa de Docker en la raíz del proyecto, pensa
 
 **`Makefile` en la raíz:** Expone comandos de alto nivel (`make up`, `make down`, `make build`, `make logs`, `make clean`) para que la experiencia de instalación sea de un solo comando, sin necesidad de conocer la sintaxis interna de Docker Compose.
 
-**GitHub Actions CI (`.github/workflows/ci.yml`):** Pipeline de integración continua con dos jobs paralelos:
-- **`backend`**: instala dependencias con `npm ci` (reproducible), corre lint, compila TypeScript y ejecuta los tests con reporte de cobertura. El coverage se sube como artefacto de GitHub para poder auditarlo sin clonar el repo.
-- **`frontend`**: corre `tsc --noEmit` (type-check estricto) y `npm run build` (bundle de Vite). Garantiza que ningún error de tipos llegue a main.
+**GitHub Actions CI (`.github/workflows/ci.yml`):** Pipeline de integración continua con tres jobs:
+- **`backend`**: instala dependencias con `npm ci` (reproducible), corre lint sin `--fix` (el `--fix` automático en CI puede enmascarar problemas reales — en CI queremos que el pipeline falle ruidosamente si hay code style issues), compila TypeScript y ejecuta los tests con reporte de cobertura. El coverage se sube como **artefacto de GitHub** (`actions/upload-artifact`) en lugar de versionarse en el repositorio — los reportes generados no son código fuente y contaminarían el historial de git.
+- **`frontend`**: corre `eslint` para detectar errores de estilo, `tsc --noEmit` (type-check estricto sin emitir archivos) y `npm run build` (bundle de Vite). Garantiza que ningún error de tipos ni imports rotos lleguen a `main`.
+- **`docker`** *(depende de que los dos anteriores pasen)*: construye ambas imágenes con `docker/build-push-action` sin hacer push al registry — valida que los `Dockerfile` sean correctos en cada PR antes de llegar a producción.
+
+Todos los jobs corren sobre **Node.js 22** (LTS actual) y usan las últimas versiones de las GitHub Actions oficiales para evitar warnings de deprecación en el runner.
 
 El badge de estado del CI es lo primero visible en el README — una señal inmediata de que el código en `main` compila y pasa tests.
+
 
 ---
 
@@ -113,6 +120,27 @@ En el primer intento usé `Object.prototype.hasOwnProperty.call(statistics, 'com
 El helper `buildMockItem` usaba desestructuración con default `commentCount = '50'`, lo que hacía imposible pasar `undefined` como valor real. Refactoricé el helper para usar un flag explícito `disableComments: true` en lugar de pasar `undefined`, lo que hace la intención del test más legible.
 
 ---
+
+## Estrategia de testing
+
+Se implementaron tres niveles de tests, cada uno con una responsabilidad distinta:
+
+**Nivel 1 — Unit tests del Service (`videos.service.spec.ts`)**
+
+Prueba la lógica de negocio pura en aislamiento: `calculateHype()` y `getRelativeTime()`. No hay red, no hay disco, no hay framework — solo funciones con entrada y salida verificable. 17 tests cubren todos los edge cases del enunciado (tutorial x2, comentarios desactivados, división por cero, strings numéricos).
+
+**Nivel 2 — Unit tests del Controller (`videos.controller.spec.ts`)**
+
+Verifica que el controller cumple su único rol: recibir la query y delegarla al service sin transformarla. El service se mockea completamente. Esto garantiza que si el comportamiento del controller cambia (ej: empieza a modificar params antes de pasarlos), los tests lo detectan independientemente de la lógica del service. 6 tests, controller al 100% de cobertura.
+
+**Nivel 3 — E2E tests (`test/app.e2e-spec.ts`)**
+
+Levanta una instancia real de NestJS en memoria con `supertest` y hace requests HTTP reales contra el endpoint. Verifica el stack completo integrado: routing, ValidationPipe, ClassSerializerInterceptor, service y DTO. 9 tests cubren el contrato HTTP, ordenamiento, búsqueda, exclusión de campos internos y rechazo de inputs inválidos con 400.
+
+La distinción clave: los niveles 1 y 2 pueden estar verdes aunque el `ValidationPipe` o el `ClassSerializerInterceptor` no estén configurados en el bootstrap — es el nivel 3 quien detecta esos fallos de integración.
+
+---
+
 
 ## Uso de herramientas de IA
 

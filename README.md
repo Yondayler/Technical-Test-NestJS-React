@@ -4,6 +4,14 @@
 
 Una aplicación full-stack que procesa un mock de la API de YouTube y presenta los videos en una cartelera visual rankeada por **Nivel de Hype** — una métrica de engagement calculada a partir de likes, comentarios y vistas.
 
+## Preview
+
+| Modo Oscuro | Modo Claro |
+|:-----------:|:----------:|
+| ![HypeBoard dark mode](docs/hypeboard-dark.png) | ![HypeBoard light mode](docs/hypeboard-light.png) |
+
+
+
 ## Tecnologías
 
 | Capa | Stack |
@@ -141,19 +149,23 @@ La aplicación se abre en **`http://localhost:5173`**
 
 ---
 
-## Ejecutar tests unitarios
+## Ejecutar tests
+
+### Tests unitarios + cobertura
 
 ```bash
 cd app/backend
-npm test
+npm test           # unit tests
+npm run test:cov   # con reporte de cobertura
 ```
 
 Salida esperada:
 ```
+PASS  src/videos/videos.controller.spec.ts
 PASS  src/videos/videos.service.spec.ts
   VideosService
     calculateHype()
-      ✓ debería calcular el hype base correctamente (8ms)
+      ✓ debería calcular el hype base correctamente
       ✓ debería multiplicar x2 cuando el título contiene "Tutorial" (mayúsculas)
       ✓ debería multiplicar x2 cuando el título contiene "tutorial" (minúsculas)
       ✓ debería multiplicar x2 cuando el título contiene "TuToRiaL" (mixed case)
@@ -171,8 +183,41 @@ PASS  src/videos/videos.service.spec.ts
       ✓ debería retornar "Hace X meses" para varios meses atrás
       ✓ debería retornar "Hace 1 año" para ~366 días atrás
       ✓ debería retornar "Hace X años" para varios años atrás
+  VideosController
+    findAll()
+      ✓ debería llamar al service con la query recibida y retornar su resultado
+      ✓ debería pasar el parámetro sort al service sin modificarlo
+      ✓ debería pasar el parámetro search al service sin modificarlo
+      ✓ debería pasar sort y search combinados al service
+      ✓ debería retornar array vacío si el service no encuentra resultados
+      ✓ el controller es una capa delgada: devuelve exactamente lo que el service retorna
 
-Tests: 17 passed, 17 total
+Tests: 23 passed, 23 total
+```
+
+### Tests E2E (integración HTTP completa)
+
+```bash
+cd app/backend
+npm run test:e2e
+```
+
+Salida esperada:
+```
+PASS  test/app.e2e-spec.ts
+  Videos API (e2e)
+    GET /api/videos
+      ✓ debería retornar 200 y un array de videos
+      ✓ debería retornar videos con el contrato de VideoResponseDto
+      ✓ NO debería exponer publishedAtISO (campo @Excluded del DTO)
+      ✓ debería ordenar por hype descendente por defecto
+      ✓ debería ordenar por hype ascendente con sort=hype-asc
+      ✓ debería filtrar por título con el parámetro search
+      ✓ debería retornar array vacío cuando la búsqueda no tiene resultados
+      ✓ debería admitir combinación de sort y search simultáneamente
+      ✓ debería retornar 400 cuando sort tiene un valor no permitido
+
+Tests: 9 passed, 9 total
 ```
 
 ---
@@ -183,7 +228,7 @@ Tests: 17 passed, 17 total
 [
   {
     "id": "vid_003",
-    "thumbnail": "https://via.placeholder.com/300x200/...",
+    "thumbnail": "https://via.placeholder.com/300x200/4A90D9/FFFFFF?text=TailwindCSS",
     "title": "TailwindCSS errores comunes - Tutorial",
     "author": "JuniorDev99",
     "publishedAt": "Hace 2 años",
@@ -191,6 +236,9 @@ Tests: 17 passed, 17 total
   }
 ]
 ```
+
+> **Nota:** El campo `thumbnail` refleja la URL original del mock de YouTube. El frontend intercepta esta URL y reemplaza el dominio `via.placeholder.com` (dado de baja) por `placehold.co` en el componente `Thumbnail` antes de pasársela al `<img>`, sin modificar la respuesta del servidor.
+
 
 ---
 

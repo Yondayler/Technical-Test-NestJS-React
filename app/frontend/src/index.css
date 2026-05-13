@@ -33,14 +33,14 @@
 ───────────────────────────────────────────────────────────── */
 [data-theme="dark"] {
   --bg:             #0a0a0a;
-  --bg-2:           #111111;
-  --bg-3:           #1a1a1a;
-  --border:         rgba(255, 255, 255, 0.07);
-  --border-hover:   rgba(255, 255, 255, 0.14);
+  --bg-2:           #161616;
+  --bg-3:           #1e1e1e;
+  --border:         rgba(255, 255, 255, 0.10);
+  --border-hover:   rgba(255, 255, 255, 0.18);
 
   --text-primary:   #ededed;
-  --text-secondary: #777777;
-  --text-tertiary:  #444444;
+  --text-secondary: #888888;
+  --text-tertiary:  #606060;
 
   --accent:         #f5a623;
   --accent-bg:      rgba(245, 166, 35, 0.08);
@@ -114,6 +114,12 @@ body.theme-ready {
   color: var(--text-primary);
   line-height: 1.05;
   margin-bottom: 14px;
+}
+
+/* Cada letra se comporta como inline-block para que GSAP la mueva */
+.title-char {
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
 .header__subtitle {

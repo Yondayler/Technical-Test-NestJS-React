@@ -1,5 +1,6 @@
 import './index.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import { useVideos } from './hooks/useVideos';
 import { useDebounce } from './hooks/useDebounce';
 import { VideoCard, CrownCard, SkeletonCard } from './components/VideoCard';
@@ -15,7 +16,47 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: 'title-asc', label: 'Título A–Z' },
 ];
 
-// ── Iconos SVG inline (sin librería externa) ───────────────────
+// ── Título animado letra por letra ────────────────────────────
+function AnimatedTitle() {
+  const containerRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const chars = containerRef.current.querySelectorAll<HTMLElement>('.title-char');
+    gsap.fromTo(
+      chars,
+      { y: 18, autoAlpha: 0 },
+      {
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.5,
+        stagger: 0.045,
+        ease: 'power3.out',
+        delay: 0.1,
+      },
+    );
+  }, []);
+
+  return (
+    <h1
+      ref={containerRef}
+      className="header__title"
+      aria-label="HypeBoard"
+    >
+      {'HypeBoard'.split('').map((char, i) => (
+        <span
+          key={i}
+          className="title-char"
+          aria-hidden="true"
+        >
+          {char}
+        </span>
+      ))}
+    </h1>
+  );
+}
+
+
 function SunIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -131,7 +172,7 @@ function App() {
       {/* ── Header ── */}
       <header className="header" role="banner">
         <p className="header__eyebrow">Cartelera de conocimiento</p>
-        <h1 className="header__title">HypeBoard</h1>
+        <AnimatedTitle />
         <p className="header__subtitle">
           Videos tech rankeados por engagement real, no por views.
         </p>
@@ -229,7 +270,7 @@ function App() {
                 <div className="video-grid" role="list">
                   {restVideos.map((video, i) => (
                     <div key={video.id} role="listitem">
-                      <VideoCard video={video} maxHype={maxHype} animationDelay={i * 35} />
+                      <VideoCard video={video} maxHype={maxHype} animationDelay={Math.min(i * 20, 60)} />
                     </div>
                   ))}
                 </div>

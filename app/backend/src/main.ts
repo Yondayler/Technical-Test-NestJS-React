@@ -1,5 +1,5 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { ClassSerializerInterceptor } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -11,6 +11,17 @@ async function bootstrap() {
     origin: ['http://localhost:5173', 'http://localhost:3000'],
     methods: ['GET'],
   });
+
+  // Validación global: activa los decoradores de class-validator en todos los DTOs
+  // (@IsIn, @IsString, @IsOptional, etc.). Sin esto, esas anotaciones son código muerto
+  // y la API acepta cualquier valor en los query params.
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,        // elimina propiedades no declaradas en el DTO
+      forbidNonWhitelisted: false, // no rechazar props extras, solo ignorarlas
+      transform: true,        // convierte tipos automáticamente (string → enum)
+    }),
+  );
 
   // Serialización global: aplica @Exclude() / @Expose() de class-transformer
   // en todas las respuestas. Sin esto, los campos sin @Expose() (como publishedAtISO)

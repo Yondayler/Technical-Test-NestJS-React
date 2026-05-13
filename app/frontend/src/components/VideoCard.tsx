@@ -162,8 +162,8 @@ export function VideoCard({ video, maxHype, animationDelay = 0 }: VideoCardProps
           if (entry.isIntersecting) {
             gsap.fromTo(
               cardRef.current,
-              { y: 12, autoAlpha: 0 },
-              { y: 0, autoAlpha: 1, duration: 0.55, delay: animationDelay / 1000, ease: 'power3.out' }
+              { y: 8, autoAlpha: 0 },
+              { y: 0, autoAlpha: 1, duration: 0.38, delay: animationDelay / 1000, ease: 'power3.out' }
             );
             observer.unobserve(entry.target);
           }
