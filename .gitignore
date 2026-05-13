@@ -10,6 +10,11 @@ app/frontend/dist/
 build/
 *.tsbuildinfo
 
+# Cobertura de tests (generado automáticamente)
+coverage/
+app/backend/coverage/
+
+
 # Logs
 logs
 *.log
@@ -32,6 +37,9 @@ Thumbs.db
 .agents/
 skills-lock.json
 .gemini/
+
+# Especificaciones internas (no parte del entregable)
+Technical test.md
 
 # Editor / IDE
 .vscode/
