@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -9,7 +7,14 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/videos', (r) => { process.exit(r.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   frontend:
     build:
@@ -17,8 +22,10 @@ services:
       dockerfile: Dockerfile
     container_name: hypeboard_frontend
     ports:
-      - "5173:5173"
+      - "5173:80"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
+    restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy

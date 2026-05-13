@@ -1,8 +1,16 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import { YouTubeApiResponse, YouTubeVideoItem } from './interfaces/youtube-api.interface';
+import {
+  YouTubeApiResponse,
+  YouTubeVideoItem,
+} from './interfaces/youtube-api.interface';
 import { VideoResponseDto } from './dto/video-response.dto';
+import { VideoQueryDto, SortKey } from './dto/video-query.dto';
 
 @Injectable()
 export class VideosService {
@@ -10,15 +18,53 @@ export class VideosService {
 
   /**
    * Retorna el listado de videos procesados con Nivel de Hype calculado.
-   * Lee el JSON mock que simula la respuesta de la API de YouTube.
+   * Acepta parámetros opcionales de ordenamiento y búsqueda por título.
    */
-  findAll(): VideoResponseDto[] {
+  findAll(query: VideoQueryDto = {}): VideoResponseDto[] {
     const rawData = this.loadMockData();
-    const videos = rawData.items.map((item) => this.transformVideo(item));
+    let videos = rawData.items.map((item) => this.transformVideo(item));
+
+    // Búsqueda por título (case-insensitive)
+    if (query.search?.trim()) {
+      const q = query.search.trim().toLowerCase();
+      videos = videos.filter((v) => v.title.toLowerCase().includes(q));
+    }
+
+    // Ordenamiento
+    videos = this.sortVideos(videos, query.sort ?? 'hype-desc');
+
     return videos;
   }
 
   // ─── Private helpers ────────────────────────────────────────────────────────
+
+  private sortVideos(
+    videos: VideoResponseDto[],
+    sort: SortKey,
+  ): VideoResponseDto[] {
+    return [...videos].sort((a, b) => {
+      switch (sort) {
+        case 'hype-desc':
+          return b.hypeLevel - a.hypeLevel;
+        case 'hype-asc':
+          return a.hypeLevel - b.hypeLevel;
+        case 'date-desc':
+          return (
+            new Date(b.publishedAtISO).getTime() -
+            new Date(a.publishedAtISO).getTime()
+          );
+        case 'date-asc':
+          return (
+            new Date(a.publishedAtISO).getTime() -
+            new Date(b.publishedAtISO).getTime()
+          );
+        case 'title-asc':
+          return a.title.localeCompare(b.title, 'es');
+        default:
+          return 0;
+      }
+    });
+  }
 
   private loadMockData(): YouTubeApiResponse {
     try {
@@ -28,7 +74,9 @@ export class VideosService {
       return JSON.parse(raw) as YouTubeApiResponse;
     } catch (error) {
       this.logger.error('Error al leer el archivo mock de YouTube', error);
-      throw new InternalServerErrorException('No se pudieron cargar los datos de videos');
+      throw new InternalServerErrorException(
+        'No se pudieron cargar los datos de videos',
+      );
     }
   }
 
@@ -42,6 +90,7 @@ export class VideosService {
       title: item.snippet.title,
       author: item.snippet.channelTitle,
       publishedAt,
+      publishedAtISO: item.snippet.publishedAt,
       hypeLevel,
     });
   }
@@ -57,7 +106,10 @@ export class VideosService {
     const { statistics, snippet } = item;
 
     // Regla 3: comentarios desactivados (la propiedad NO existe en el objeto)
-    if (!('commentCount' in statistics) || statistics.commentCount === undefined) {
+    if (
+      !('commentCount' in statistics) ||
+      statistics.commentCount === undefined
+    ) {
       return 0;
     }
 

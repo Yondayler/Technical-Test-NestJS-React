@@ -1,19 +1,44 @@
-FROM node:20-alpine
+# ---- Build Stage ----
+FROM node:20-slim AS builder
 
-# Directorio de trabajo dentro del contenedor
 WORKDIR /usr/src/app
 
-# Copiamos primero los archivos de dependencias para aprovechar la caché de Docker
+# Copiar configuración de dependencias primero
 COPY package*.json ./
 
-# Instalamos las dependencias
-RUN npm install
+# Usar npm ci para una instalación limpia y determinista
+RUN npm ci
 
-# Copiamos el resto del código y el archivo mock-youtube-api.json
+# Copiar el código fuente
 COPY . .
 
-# Exponemos el puerto del backend
+# Compilar la aplicación NestJS
+RUN npm run build
+
+# ---- Production Stage ----
+FROM node:20-slim AS production
+
+# Establecer la variable de entorno para producción
+ENV NODE_ENV=production
+
+WORKDIR /usr/src/app
+
+# Copiar los archivos de configuración de dependencias
+COPY package*.json ./
+
+# Instalar solo las dependencias de producción para mantener la imagen ligera
+RUN npm ci --only=production
+
+# Copiar el build y otros archivos estáticos necesarios
+COPY --from=builder /usr/src/app/dist ./dist
+# Asegurarnos de que el archivo mock exista si el código lo carga directamente desde la raíz
+COPY --from=builder /usr/src/app/mock-youtube-api.json ./
+
+# Usar el usuario no-root por motivos de seguridad
+USER node
+
+# Exponer el puerto del backend
 EXPOSE 3001
 
-# Iniciamos el servidor
-CMD ["npm", "run", "start:dev"]
+# Iniciar la aplicación compilada
+CMD ["node", "dist/main"]

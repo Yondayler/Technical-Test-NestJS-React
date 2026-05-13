@@ -1,19 +1,34 @@
-FROM node:20-alpine
+# ---- Build Stage ----
+FROM node:20-slim AS builder
 
-# Directorio de trabajo dentro del contenedor
 WORKDIR /usr/src/app
 
-# Copiamos los archivos de dependencias
+# Copiar configuración de dependencias primero
 COPY package*.json ./
 
-# Instalamos las dependencias
-RUN npm install
+# Usar npm ci para una instalación limpia y determinista
+RUN npm ci
 
-# Copiamos el resto del código
+# Copiar el código fuente
 COPY . .
 
-# Exponemos el puerto del frontend
-EXPOSE 5173
+# Compilar la aplicación React/Vite para producción
+RUN npm run build
 
-# En Vite es obligatorio el flag --host para que se pueda acceder desde fuera del contenedor
-CMD ["npm", "run", "dev", "--", "--host"]
+# ---- Production Stage ----
+FROM nginx:latest AS production
+
+# Remover la configuración por defecto de Nginx
+RUN rm -rf /etc/nginx/conf.d/*
+
+# Copiar nuestra propia configuración de Nginx (manejo de SPA, gzip, caché)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copiar los estáticos construidos desde la etapa anterior
+COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+
+# Exponer el puerto de Nginx
+EXPOSE 80
+
+# Iniciar Nginx
+CMD ["nginx", "-g", "daemon off;"]

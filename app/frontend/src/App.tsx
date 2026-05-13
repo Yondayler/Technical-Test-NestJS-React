@@ -1,7 +1,19 @@
 import './index.css';
 import { useState, useEffect } from 'react';
 import { useVideos } from './hooks/useVideos';
-import { VideoCard, SkeletonCard } from './components/VideoCard';
+import { useDebounce } from './hooks/useDebounce';
+import { VideoCard, CrownCard, SkeletonCard } from './components/VideoCard';
+
+// ── Tipos de ordenamiento ───────────────────────────────────────
+type SortKey = 'hype-desc' | 'hype-asc' | 'date-desc' | 'date-asc' | 'title-asc';
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: 'hype-desc', label: 'Mayor Hype' },
+  { value: 'hype-asc',  label: 'Menor Hype' },
+  { value: 'date-desc', label: 'Más reciente' },
+  { value: 'date-asc',  label: 'Más antiguo' },
+  { value: 'title-asc', label: 'Título A–Z' },
+];
 
 // ── Iconos SVG inline (sin librería externa) ───────────────────
 function SunIcon() {
@@ -34,8 +46,6 @@ function useTheme() {
     localStorage.setItem('hype-theme', theme);
   }, [theme]);
 
-  // Activa la transición CSS solo después del primer render
-  // para evitar el flash de tema al cargar la página
   useEffect(() => {
     const id = requestAnimationFrame(() => {
       document.body.classList.add('theme-ready');
@@ -47,12 +57,72 @@ function useTheme() {
   return { theme, toggle };
 }
 
+// ── Barra de filtros / ordenamiento ────────────────────────────
+interface SortBarProps {
+  sort: SortKey;
+  onSort: (key: SortKey) => void;
+  search: string;
+  onSearch: (q: string) => void;
+  total: number;
+}
+
+function SortBar({ sort, onSort, search, onSearch, total }: SortBarProps) {
+  return (
+    <div className="sort-bar" role="toolbar" aria-label="Filtros y ordenamiento">
+      {/* Buscador */}
+      <div className="sort-bar__search">
+        <svg className="sort-bar__search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+        </svg>
+        <input
+          className="sort-bar__input"
+          type="text"
+          placeholder="Buscar video..."
+          value={search}
+          onChange={(e) => onSearch(e.target.value)}
+          aria-label="Buscar video por título"
+        />
+        {search && (
+          <button className="sort-bar__clear" onClick={() => onSearch('')} aria-label="Limpiar búsqueda">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        )}
+      </div>
+
+      {/* Contador */}
+      <span className="sort-bar__count" aria-live="polite">
+        {total} video{total !== 1 ? 's' : ''}
+      </span>
+
+      {/* Ordenamiento */}
+      <div className="sort-bar__options" role="group" aria-label="Ordenar por">
+        {SORT_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            className={`sort-btn ${sort === opt.value ? 'sort-btn--active' : ''}`}
+            onClick={() => onSort(opt.value)}
+            aria-pressed={sort === opt.value}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── App ────────────────────────────────────────────────────────
 function App() {
+  const [sort, setSort] = useState<SortKey>('hype-desc');
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 400); // espera 400ms tras el último teclazo
   const { theme, toggle } = useTheme();
-  const { data: videos, loading, error, refetch } = useVideos();
+
+  // El backend aplica sort y search — el hook solo pasa los params a la API
+  const { data: videos, loading, error, refetch } = useVideos({ sort, search: debouncedSearch });
 
   const maxHype = videos.length > 0 ? Math.max(...videos.map((v) => v.hypeLevel)) : 0;
+  // Con sort=hype-desc el primer video siempre es la Joya de la Corona
   const crownVideo = videos.find((v) => v.hypeLevel === maxHype) ?? null;
   const restVideos = videos.filter((v) => v !== crownVideo);
 
@@ -66,7 +136,6 @@ function App() {
           Videos tech rankeados por engagement real, no por views.
         </p>
 
-        {/* Toggle dark / light */}
         <button
           className="theme-toggle"
           onClick={toggle}
@@ -135,16 +204,11 @@ function App() {
                 <div className="section-label crown-label" id="crown-heading">
                   Joya de la Corona
                 </div>
-                <VideoCard
-                  video={crownVideo}
-                  maxHype={maxHype}
-                  isCrown
-                  animationDelay={0}
-                />
+                <CrownCard video={crownVideo} maxHype={maxHype} />
               </section>
             )}
 
-            {/* Grid */}
+            {/* Grid con sort/search */}
             <section className="grid-section" aria-labelledby="grid-heading">
               <div className="section-label" id="grid-heading">
                 Todos los videos
@@ -152,17 +216,33 @@ function App() {
                   {restVideos.length}
                 </span>
               </div>
-              <div className="video-grid" role="list">
-                {restVideos.map((video, i) => (
-                  <div key={video.id} role="listitem">
-                    <VideoCard
-                      video={video}
-                      maxHype={maxHype}
-                      animationDelay={i * 35}
-                    />
-                  </div>
-                ))}
-              </div>
+
+              <SortBar
+                sort={sort}
+                onSort={setSort}
+                search={search}
+                onSearch={setSearch}
+                total={restVideos.length}
+              />
+
+              {restVideos.length > 0 ? (
+                <div className="video-grid" role="list">
+                  {restVideos.map((video, i) => (
+                    <div key={video.id} role="listitem">
+                      <VideoCard video={video} maxHype={maxHype} animationDelay={i * 35} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="error-state" style={{ minHeight: 160 }} role="status">
+                  <p className="error-state__message">
+                    Sin resultados para "<strong>{search}</strong>"
+                  </p>
+                  <button className="error-state__retry" onClick={() => setSearch('')}>
+                    Limpiar búsqueda
+                  </button>
+                </div>
+              )}
             </section>
           </>
         )}

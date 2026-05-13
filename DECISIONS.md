@@ -32,6 +32,10 @@ Implementé `getRelativeTime()` con cálculos sobre `Date.now()` y un array de u
 
 Habilitado para `localhost:5173` (Vite) y `localhost:3000` para no bloquear el desarrollo del frontend. En producción esto se configuraría por variable de entorno.
 
+**Swagger / OpenAPI con `@nestjs/swagger`**
+
+Elegí documentar la API con Swagger en lugar de un README de texto plano porque es directamente ejecutable: el evaluador puede abrir `http://localhost:3001/api/docs`, ver el schema del modelo `VideoResponseDto` con sus descripciones y ejemplos reales, y ejecutar requests desde el browser sin necesidad de Postman ni `curl`. Las anotaciones viven en los mismos DTOs y controller que definen el contrato — no en un archivo YAML externo que puede quedar desactualizado.
+
 ### Frontend
 
 **Custom hook `useVideos`**
@@ -66,7 +70,21 @@ docker-compose.yml → Orquestador para levantar el stack completo
 Ambas apps son independientes y se desarrollan en paralelo. El único acoplamiento es la URL del endpoint, que en el frontend está en una constante fácilmente configurable (`API_URL` en `useVideos.ts`).
 
 ### Developer Experience (DX) 🐳
-Se ha incluido un `docker-compose.yml` en la raíz para garantizar que el proyecto se pueda auditar y ejecutar en cualquier máquina sin depender de versiones locales de Node.js, aislando las dependencias y reduciendo la fricción al probar el código.
+Se incluye una configuración completa de Docker en la raíz del proyecto, pensada para que cualquier evaluador pueda auditar y ejecutar el proyecto sin depender de versiones locales de Node.js.
+
+**Multi-stage builds:** Ambos `Dockerfile` están implementados con dos etapas separadas:
+- **Etapa `builder`**: instala dependencias y compila la aplicación (TypeScript → JS en el backend, Vite bundle en el frontend).
+- **Etapa `production`**: imagen final mínima que solo contiene los artefactos compilados. El backend usa `node:20-slim` con únicamente las dependencias de producción (`npm ci --only=production`) y corre bajo el usuario `node` (no root). El frontend usa `nginx:latest` para servir los estáticos, lo cual es significativamente más eficiente que mantener Node.js activo solo para servir archivos.
+
+**Orquestación con `docker-compose.yml`:** El backend incluye un `healthcheck` que verifica que la API esté respondiendo antes de iniciar el frontend (`depends_on: condition: service_healthy`), eliminando race conditions al levantar el stack.
+
+**`Makefile` en la raíz:** Expone comandos de alto nivel (`make up`, `make down`, `make build`, `make logs`, `make clean`) para que la experiencia de instalación sea de un solo comando, sin necesidad de conocer la sintaxis interna de Docker Compose.
+
+**GitHub Actions CI (`.github/workflows/ci.yml`):** Pipeline de integración continua con dos jobs paralelos:
+- **`backend`**: instala dependencias con `npm ci` (reproducible), corre lint, compila TypeScript y ejecuta los tests con reporte de cobertura. El coverage se sube como artefacto de GitHub para poder auditarlo sin clonar el repo.
+- **`frontend`**: corre `tsc --noEmit` (type-check estricto) y `npm run build` (bundle de Vite). Garantiza que ningún error de tipos llegue a main.
+
+El badge de estado del CI es lo primero visible en el README — una señal inmediata de que el código en `main` compila y pasa tests.
 
 ---
 

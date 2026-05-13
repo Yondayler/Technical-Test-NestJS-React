@@ -1,5 +1,7 @@
 # HypeBoard — Cartelera de Conocimiento
 
+[![CI](https://github.com/Yondayler/Technical-Test-NestJS-React/actions/workflows/ci.yml/badge.svg)](https://github.com/Yondayler/Technical-Test-NestJS-React/actions/workflows/ci.yml)
+
 Una aplicación full-stack que procesa un mock de la API de YouTube y presenta los videos en una cartelera visual rankeada por **Nivel de Hype** — una métrica de engagement calculada a partir de likes, comentarios y vistas.
 
 ## Tecnologías
@@ -37,35 +39,73 @@ app/
 
 ## Requisitos previos
 
+### Para correr con Docker (Recomendado)
+- **Docker** v20 o superior
+- **Docker Compose** v2 o superior (viene incluido con Docker Desktop)
+- **make**
+
+Verifica tu instalación:
+```bash
+docker --version
+docker compose version
+make --version
+```
+
+### Para ejecución manual
 - **Node.js** v18 o superior
 - **npm** v9 o superior
-
-Verifica tu versión:
-```bash
-node --version
-npm --version
-```
 
 ---
 
 ## Instalación y ejecución
 
-### Opción A: Usando Docker (Recomendado 🐳)
-Si tienes Docker y Docker Compose instalados, puedes levantar todo el stack con un solo comando:
+### ⭐ Opción A: Docker con Make (Recomendado)
+
+La forma más sencilla y rápida de levantar todo el stack:
 
 ```bash
-docker-compose up --build
+# 1. Clonar el repositorio
+git clone https://github.com/Yondayler/Technical-Test-NestJS-React.git
+
+cd Technical-Test-NestJS-React
+
+# 2. Construir las imágenes (solo la primera vez o tras cambios)
+make build
+
+# 3. Levantar la aplicación
+make up
 ```
-- Backend disponible en `http://localhost:3001`
-- Frontend disponible en `http://localhost:5173`
+
+Al terminar verás:
+```
+╔══════════════════════════════════════════════╗
+║        ✅  HypeBoard está listo!             ║
+╠══════════════════════════════════════════════╣
+║  🌐 Frontend  →  http://localhost:5173       ║
+║  ⚙️  Backend   →  http://localhost:3001       ║
+╚══════════════════════════════════════════════╝
+```
+
+#### Comandos disponibles
+
+| Comando | Descripción |
+|---|---|
+| `make build` | Construye (o reconstruye) las imágenes desde cero |
+| `make up` | Levanta los contenedores en segundo plano |
+| `make down` | Apaga y elimina los contenedores |
+| `make logs` | Muestra los logs en tiempo real |
+| `make clean` | Elimina contenedores, volúmenes e imágenes huérfanas |
+
+---
 
 ### Opción B: Ejecución Manual
 
 #### 1. Clonar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
-cd <nombre-del-repo>
+git clone https://github.com/Yondayler/Technical-Test-NestJS-React.git
+
+cd Technical-Test-NestJS-React
 ```
 
 #### 2. Backend (NestJS)
@@ -78,12 +118,14 @@ npm run start:dev
 
 El servidor arranca en **`http://localhost:3001`**
 
-Endpoint disponible:
+Endpoints disponibles:
 ```
-GET http://localhost:3001/api/videos
+GET  http://localhost:3001/api/videos        → Lista de videos con Hype
+GET  http://localhost:3001/api/videos?sort=date-desc&search=react
+GET  http://localhost:3001/api/docs          → Documentación Swagger / OpenAPI
 ```
 
-### 3. Frontend (React + Vite)
+#### 3. Frontend (React + Vite)
 
 En una terminal separada:
 
@@ -159,3 +201,5 @@ Tests: 17 passed, 17 total
 - **Estados de UI** — Skeleton loading, error con retry y estado vacío
 - **Cálculo de Hype** — Fórmula con reglas de negocio: multiplicador x2 para tutoriales, Hype 0 si comentarios desactivados, protección contra división por cero
 - **Fechas sin librerías externas** — Transformación a texto relativo implementada con JS nativo
+- **Swagger / OpenAPI** — Documentación interactiva disponible en `http://localhost:3001/api/docs`
+- **Búsqueda y ordenamiento backend-driven** — 5 criterios de sort + búsqueda por título con debounce en el frontend
