@@ -73,7 +73,7 @@ export function useVideos({ sort = 'hype-desc', search = '' }: UseVideosOptions 
       cancelled = true;
     };
   // Re-ejecutar cuando cambian sort, search o fetchCount
-  }, [sort, search, fetchCount]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sort, search, fetchCount]);
 
   return { data, loading, error, refetch };
 }

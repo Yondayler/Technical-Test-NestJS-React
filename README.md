@@ -6,11 +6,19 @@ Una aplicación full-stack que procesa un mock de la API de YouTube y presenta l
 
 ## Preview
 
-| Modo Oscuro | Modo Claro |
-|:-----------:|:----------:|
-| ![HypeBoard dark mode](docs/hypeboard-dark.png) | ![HypeBoard light mode](docs/hypeboard-light.png) |
+| Tema Minimalist (Dark) | Tema Minimalist (Light) | Tema YouTube |
+|:---:|:---:|:---:|
+| ![HypeBoard dark mode](docs/hypeboard-dark.png) | ![HypeBoard light mode](docs/hypeboard-light.png) | ![YouTube Theme](docs/hypeboard-youtube.png) |
 
+## ✨ Características Principales
 
+* **Arquitectura Estructural Multi-Tema**: Más allá de simples cambios CSS, el proyecto implementa un *Theme Router* en React capaz de reemplazar el DOM y los componentes visuales completos en tiempo real.
+    * **Minimalist**: Diseño original centrado en tipografías editoriales, alto contraste y animaciones GSAP, donde la "Joya de la Corona" es una tarjeta masiva de ancho completo.
+    * **YouTube**: Una réplica estructural pixel-perfect, con barra lateral, menú superior, filtros mediante chips (pastillas) funcionales y una tarjeta top 1 con aura dorada.
+* **Manejo de Estado y Rendimiento**: Implementación de Hooks personalizados (`useVideos`, `useDebounce`) para un filtrado y ordenamiento óptimo en el backend, limitando solicitudes de red.
+* **Modo Claro/Oscuro Real**: Integración impecable de *CSS Variables* gestionadas por localStorage para retener preferencias.
+* **Documentación Automática**: Backend documentado usando Swagger/OpenAPI.
+* **Despliegue Universal**: Todo Dockerizado en una arquitectura multi-contenedor para iniciar con un simple comando de Make.
 
 ## Tecnologías
 

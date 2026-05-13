@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&display=swap');
 
 /* ─────────────────────────────────────────────────────────────
    LIGHT THEME (default — warm editorial)
@@ -26,6 +26,13 @@
 
   --toggle-bg:      #f0efed;
   --toggle-icon:    #111111;
+
+  /* ── Estilo visual (switcher) ── */
+  --card-radius:    12px;
+  --font-body:      'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading:   'Newsreader', Georgia, serif;
+  --card-blur:      0px;
+  --app-bg:         var(--bg);
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -64,8 +71,9 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg);
+  font-family: var(--font-body);
+  background: var(--app-bg);
+  background-attachment: fixed;
   color: var(--text-primary);
   font-size: 15px;
   line-height: 1.6;
@@ -107,7 +115,7 @@ body.theme-ready {
 }
 
 .header__title {
-  font-family: 'Newsreader', Georgia, serif;
+  font-family: var(--font-heading);
   font-size: clamp(2.2rem, 4.5vw, 3.2rem);
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -323,10 +331,12 @@ body.theme-ready {
 .video-card {
   background: var(--bg-2);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--card-radius);
   overflow: hidden;
   cursor: pointer;
   box-shadow: var(--shadow-card);
+  backdrop-filter: blur(var(--card-blur));
+  -webkit-backdrop-filter: blur(var(--card-blur));
   transition:
     border-color 200ms ease,
     transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -683,6 +693,75 @@ body.theme-ready {
   color: var(--text-tertiary);
   border-top: 1px solid var(--border);
 }
+
+/* ─────────────────────────────────────────────────────────────
+   STYLE SWITCHER UI
+───────────────────────────────────────────────────────────── */
+.style-switcher {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.style-btn {
+  height: 34px;
+  padding: 0 18px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 150ms, background 150ms, color 150ms;
+  white-space: nowrap;
+}
+
+.style-btn:hover { border-color: var(--border-hover); color: var(--text-primary); }
+.style-btn--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+[data-theme="dark"] .style-btn--active { color: #0a0a0a; }
+
+/* ─────────────────────────────────────────────────────────────
+   STYLE: YOUTUBE
+───────────────────────────────────────────────────────────── */
+[data-style="youtube"] {
+  --card-radius:   8px;
+  --font-body:     'Roboto', -apple-system, sans-serif;
+  --font-heading:  'Roboto', -apple-system, sans-serif;
+  --accent:        #ff0000;
+  --accent-bg:     rgba(255, 0, 0, 0.06);
+  --accent-border: rgba(255, 0, 0, 0.25);
+  --shadow-crown:  0 4px 24px rgba(255, 0, 0, 0.12), 0 0 0 1px rgba(255, 0, 0, 0.2);
+}
+[data-style="youtube"][data-theme="dark"] {
+  --bg:            #0f0f0f;
+  --bg-2:          #212121;
+  --bg-3:          #2a2a2a;
+  --text-primary:  #f1f1f1;
+  --text-secondary:#aaaaaa;
+  --toggle-bg:     #212121;
+  --shadow-crown:  0 4px 32px rgba(255, 0, 0, 0.18), 0 0 0 1px rgba(255, 0, 0, 0.28);
+}
+[data-style="youtube"] .video-card--crown:hover {
+  box-shadow: 0 8px 40px rgba(255, 0, 0, 0.2), 0 0 0 1px rgba(255, 0, 0, 0.4);
+}
+[data-style="youtube"] .crown-glow {
+  background: radial-gradient(circle, #ff0000 0%, transparent 65%);
+}
+[data-style="youtube"] .video-card--crown .card__title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+
 
 /* ─────────────────────────────────────────────────────────────
    RESPONSIVE
