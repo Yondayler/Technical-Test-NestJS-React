@@ -88,21 +88,60 @@ export function NetflixLayout({
 
   if (error) {
     return (
-      <div className="netflix-layout" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+      <div className={`netflix-layout ${theme === 'dark' ? 'nf-dark' : 'nf-light'}`}>
         <nav className="nf-nav nf-nav--scrolled">
           <div className="nf-logo" onClick={() => onStyleChange('minimalist')}>HYPEFLIX</div>
+          <ul className="nf-nav__links">
+            <li className="nf-nav__link" onClick={() => onStyleChange('minimalist')}>Minimalist</li>
+            <li className="nf-nav__link" onClick={() => onStyleChange('youtube')}>YouTube</li>
+            <li className="nf-nav__link" onClick={() => onStyleChange('appletv')}>HypeTV+</li>
+            <li className="nf-nav__link nf-nav__link--active">Netflix</li>
+          </ul>
+          <div className="nf-nav__right">
+            <button 
+              className="nf-nav__icon-btn" 
+              onClick={toggleTheme} 
+              style={{ 
+                marginRight: '20px', 
+                background: 'transparent', 
+                border: 'none', 
+                padding: 0,
+                color: 'inherit',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {theme === 'dark' ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              )}
+            </button>
+            <div className="nf-avatar" style={{ width: '32px', height: '32px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" 
+                alt="Avatar" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          </div>
         </nav>
-        <div style={{ textAlign: 'center', maxWidth: '500px', padding: '20px' }}>
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--nf-red)" strokeWidth="2" style={{ marginBottom: '20px', display: 'inline-block' }}>
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-          <h2 style={{ fontSize: '2rem', marginBottom: '15px' }}>¿Quiénes somos? ¿A dónde vamos?</h2>
-          <p style={{ color: '#aaa', marginBottom: '30px', fontSize: '1.1rem', lineHeight: '1.5' }}>
-            No pudimos conectar con los servidores de HypeBoard. Asegúrate de que tu backend esté corriendo y revisa tu conexión.
-          </p>
-          <button className="nf-btn nf-btn--white" onClick={refetch} style={{ margin: '0 auto' }}>
-            Reintentar conexión
-          </button>
+
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 20px 40px', background: 'var(--nf-bg)' }}>
+          <div style={{ maxWidth: '600px' }}>
+            <h2 style={{ fontSize: '3.5rem', fontWeight: 800, marginBottom: '20px', color: 'var(--nf-text)', letterSpacing: '-1px' }}>
+              ¿Quiénes somos? ¿A dónde vamos?
+            </h2>
+            <p style={{ color: 'var(--nf-text-muted)', marginBottom: '40px', fontSize: '1.2rem', lineHeight: '1.6', opacity: 0.8 }}>
+              No pudimos conectar con los servidores de HypeBoard. <br/>
+              Asegúrate de que tu backend esté corriendo y revisa tu conexión.
+            </p>
+            <button className="nf-btn nf-btn--white" onClick={refetch} style={{ margin: '0 auto', padding: '12px 35px', fontSize: '1.1rem' }}>
+              Reintentar conexión
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -115,9 +154,9 @@ export function NetflixLayout({
         <div className="nf-logo" onClick={() => onStyleChange('minimalist')}>HYPEFLIX</div>
         
         <ul className="nf-nav__links">
-          <li className="nf-nav__link" onClick={() => onStyleChange('minimalist')}>Inicio</li>
-          <li className="nf-nav__link" onClick={() => onStyleChange('youtube')}>YouTube Mode</li>
-          <li className="nf-nav__link" onClick={() => onStyleChange('cyberpunk')}>Cyberpunk</li>
+          <li className="nf-nav__link" onClick={() => onStyleChange('minimalist')}>Minimalist</li>
+          <li className="nf-nav__link" onClick={() => onStyleChange('youtube')}>YouTube</li>
+          <li className="nf-nav__link" onClick={() => onStyleChange('appletv')}>HypeTV+</li>
           <li className="nf-nav__link nf-nav__link--active">Netflix Original</li>
         </ul>
 
@@ -155,7 +194,13 @@ export function NetflixLayout({
             }
           </button>
           
-          <div className="yt-avatar" style={{ background: 'var(--nf-red)', borderRadius: '2px', width: '32px', height: '32px' }}>J</div>
+          <div className="nf-avatar" style={{ width: '32px', height: '32px', borderRadius: '4px', overflow: 'hidden' }}>
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" 
+              alt="Avatar" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          </div>
         </div>
       </nav>
 

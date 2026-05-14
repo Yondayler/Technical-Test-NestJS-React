@@ -2,7 +2,7 @@ import type { Video } from '../types/video';
 
 // Mismos tipos que definimos en App
 export type SortKey = 'hype-desc' | 'hype-asc' | 'date-desc' | 'date-asc' | 'title-asc';
-export type StyleKey = 'minimalist' | 'youtube' | 'cyberpunk' | 'netflix';
+export type StyleKey = 'minimalist' | 'youtube' | 'cyberpunk' | 'netflix' | 'appletv';
 
 export interface LayoutProps {
   videos: Video[];

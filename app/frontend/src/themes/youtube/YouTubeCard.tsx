@@ -18,7 +18,7 @@ export function YouTubeCard({ video, rank, animationDelay = 0 }: YouTubeCardProp
       { y: 12, autoAlpha: 0 },
       { y: 0, autoAlpha: 1, duration: 0.4, delay: animationDelay / 1000, ease: 'power2.out' }
     );
-  }, []);
+  }, [animationDelay]);
 
   const correctedUrl = video.thumbnail.replace('https://via.placeholder.com', 'https://placehold.co');
   

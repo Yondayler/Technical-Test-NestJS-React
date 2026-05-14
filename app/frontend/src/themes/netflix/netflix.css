@@ -144,10 +144,11 @@
 
 .nf-hero__content {
   position: absolute;
-  bottom: 120px;
+  bottom: 60px;
   left: 4%;
-  max-width: 600px;
+  max-width: 800px;
   z-index: 10;
+  padding-top: 100px; /* Margen de seguridad superior */
 }
 
 .nf-hero__title {

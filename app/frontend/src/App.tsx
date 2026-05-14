@@ -5,6 +5,7 @@ import { useDebounce } from './hooks/useDebounce';
 import { MinimalistLayout } from './themes/minimalist/MinimalistLayout';
 import { YouTubeLayout } from './themes/youtube/YouTubeLayout';
 import { NetflixLayout } from './themes/netflix/NetflixLayout';
+import { AppleTVLayout } from './themes/appletv/AppleTVLayout';
 import type { SortKey, StyleKey } from './themes/types';
 
 // ── Hook de tema con persistencia en localStorage ──────────────
@@ -34,7 +35,7 @@ function useTheme() {
 function useStyle(): [StyleKey, (s: StyleKey) => void] {
   const [style, setStyle] = useState<StyleKey>(() => {
     const saved = localStorage.getItem('hype-style');
-    if (saved === 'minimalist' || saved === 'youtube' || saved === 'cyberpunk' || saved === 'netflix') {
+    if (saved === 'minimalist' || saved === 'youtube' || saved === 'cyberpunk' || saved === 'netflix' || saved === 'appletv') {
       return saved as StyleKey;
     }
     return 'minimalist';
@@ -78,6 +79,10 @@ function App() {
 
   if (style === 'netflix') {
     return <NetflixLayout {...layoutProps} />;
+  }
+
+  if (style === 'appletv') {
+    return <AppleTVLayout {...layoutProps} />;
   }
 
   // Fallback / Default

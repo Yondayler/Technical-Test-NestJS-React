@@ -54,7 +54,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  min-width: 225px;
+  min-width: fit-content;
 }
 
 .yt-navbar__right {
@@ -100,7 +100,7 @@
   align-items: center;
   flex: 1;
   max-width: 720px;
-  margin: 0 40px;
+  margin: 0 12px;
 }
 
 .yt-searchbox {
@@ -402,12 +402,20 @@
   100% { background-color: var(--yt-border); }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .yt-sidebar { display: none; }
+  .yt-navbar__left { min-width: auto; }
+  .yt-navbar__right { min-width: auto; gap: 4px; }
+  .yt-mic-btn { display: none; }
+  .yt-logo-text { display: none; }
+  .yt-navbar__center { margin: 0 8px; }
 }
 
-@media (max-width: 600px) {
-  .yt-navbar__center { display: none; }
+@media (max-width: 480px) {
+  .yt-navbar { padding: 0 8px; }
+  .yt-searchbox__btn { width: 44px; }
+  .yt-searchbox__input-wrapper { padding: 0 10px; }
+  .yt-searchbox__input-wrapper input { font-size: 14px; }
   .yt-grid { grid-template-columns: 1fr; gap: 24px; }
   .yt-content { padding: 16px 0; }
   .yt-card__thumbnail { border-radius: 0; }

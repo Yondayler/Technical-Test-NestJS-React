@@ -16,6 +16,7 @@ Una aplicación full-stack que procesa un mock de la API de YouTube y presenta l
     * **Minimalist**: Diseño original centrado en tipografías editoriales, alto contraste y animaciones GSAP, donde la "Joya de la Corona" es una tarjeta masiva de ancho completo.
     * **YouTube**: Una réplica estructural pixel-perfect, con barra lateral, menú superior, filtros mediante chips funcionales y animaciones en cascada.
     * **Netflix Original**: Una experiencia cinemática inmersiva con un "Gran Estreno" (Hero Billboard), barra de navegación dinámica, buscador integrado, y carruseles con efecto hover idénticos a la plataforma de streaming.
+    * **HypeTV+ (Apple TV style)**: Arquitectura ultra-minimalista basada en tipografía premium, espacios negativos masivos y un diseño de "Gallery View" cinemático con efectos de vidrio (glassmorphism).
     * **Cyberpunk**: Un estilo vibrante y futurista que soporta modo claro (Vaporwave) y oscuro (Neon Dark), demostrando el dominio avanzado de variables CSS.
 * **Manejo de Estado y Rendimiento**: Implementación de Hooks personalizados (`useVideos`, `useDebounce`) para un filtrado y ordenamiento óptimo en el backend, limitando solicitudes de red.
 * **Modo Claro/Oscuro Real**: Integración impecable de *CSS Variables* gestionadas por localStorage para retener preferencias.

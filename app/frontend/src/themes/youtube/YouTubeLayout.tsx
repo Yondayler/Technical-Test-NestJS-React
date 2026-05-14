@@ -49,37 +49,7 @@ export function YouTubeLayout({
     onStyleChange('minimalist');
   };
 
-  if (error) {
-    return (
-      <div className="yt-layout" style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--yt-bg)' }}>
-        <header className="yt-header" style={{ position: 'static' }}>
-          <div className="yt-header-left">
-            <button className="yt-icon-btn" onClick={() => onStyleChange('minimalist')}>
-              <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 6H3V5h18v1zm0 5H3v1h18v-1zm0 6H3v1h18v-1z"></path></svg>
-            </button>
-            <div className="yt-logo" onClick={() => onStyleChange('minimalist')} style={{ cursor: 'pointer' }}>
-              <span style={{ fontSize: '1.2rem', fontWeight: 'bold', letterSpacing: '-0.5px', color: 'var(--yt-red)' }}>HypeTube</span>
-            </div>
-          </div>
-        </header>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px' }}>
-          <svg width="120" height="120" viewBox="0 0 24 24" fill="var(--yt-text-secondary)" style={{ opacity: 0.5, marginBottom: '20px' }}>
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-          </svg>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: 'var(--yt-text)' }}>Algo salió mal</h2>
-          <p style={{ color: 'var(--yt-text-secondary)', marginBottom: '25px', maxWidth: '400px' }}>
-            No pudimos conectar con los servidores. Revisa tu conexión a internet.
-          </p>
-          <button 
-            onClick={refetch}
-            style={{ padding: '10px 24px', borderRadius: '18px', background: '#065fd4', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}
-          >
-            Reintentar
-          </button>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className={`yt-layout ${theme === 'dark' ? 'yt-dark' : 'yt-light'}`}>
@@ -143,6 +113,14 @@ export function YouTubeLayout({
               style={{ height: '36px', background: 'transparent', border: '1px solid var(--yt-border)' }}
             >
               🎬 Netflix
+            </button>
+            <button 
+              className="yt-chip" 
+              onClick={() => onStyleChange('appletv')}
+              title="Ir a Apple TV+"
+              style={{ height: '36px', background: 'transparent', border: '1px solid var(--yt-border)' }}
+            >
+              🍎 HypeTV+
             </button>
           </div>
 
@@ -228,10 +206,25 @@ export function YouTubeLayout({
               </div>
             )}
 
+            {!loading && error && (
+              <div className="yt-error" style={{ textAlign: 'center', padding: '120px 20px', gridColumn: '1 / -1' }}>
+                <div style={{ fontSize: '1.2rem', marginBottom: '20px', color: 'var(--yt-text)' }}>
+                  Se ha producido un error. Inténtalo de nuevo más tarde.
+                </div>
+                <button 
+                  onClick={refetch} 
+                  className="yt-chip active" 
+                  style={{ cursor: 'pointer', padding: '10px 24px', fontSize: '0.9rem' }}
+                >
+                  REINTENTAR
+                </button>
+              </div>
+            )}
+
             {!loading && !error && videos.length === 0 && (
-              <div className="yt-empty">
-                <h3>No hay resultados</h3>
-                <p>Prueba con otras palabras clave.</p>
+              <div className="yt-empty" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '80px 20px' }}>
+                <h3 style={{ color: 'var(--yt-text)' }}>No hay resultados</h3>
+                <p style={{ color: 'var(--yt-text-secondary)' }}>Prueba con otras palabras clave.</p>
               </div>
             )}
           </div>
