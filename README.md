@@ -51,7 +51,7 @@ app/
 │       ├── components/
 │       ├── hooks/
 │       └── types/
-└── mock-youtube-api.json  # Datos de prueba originales
+|--
 ```
 
 ---
