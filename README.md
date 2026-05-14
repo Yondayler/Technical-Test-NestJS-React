@@ -14,7 +14,9 @@ Una aplicación full-stack que procesa un mock de la API de YouTube y presenta l
 
 * **Arquitectura Estructural Multi-Tema**: Más allá de simples cambios CSS, el proyecto implementa un *Theme Router* en React capaz de reemplazar el DOM y los componentes visuales completos en tiempo real.
     * **Minimalist**: Diseño original centrado en tipografías editoriales, alto contraste y animaciones GSAP, donde la "Joya de la Corona" es una tarjeta masiva de ancho completo.
-    * **YouTube**: Una réplica estructural pixel-perfect, con barra lateral, menú superior, filtros mediante chips (pastillas) funcionales y una tarjeta top 1 con aura dorada.
+    * **YouTube**: Una réplica estructural pixel-perfect, con barra lateral, menú superior, filtros mediante chips funcionales y animaciones en cascada.
+    * **Netflix Original**: Una experiencia cinemática inmersiva con un "Gran Estreno" (Hero Billboard), barra de navegación dinámica, buscador integrado, y carruseles con efecto hover idénticos a la plataforma de streaming.
+    * **Cyberpunk**: Un estilo vibrante y futurista que soporta modo claro (Vaporwave) y oscuro (Neon Dark), demostrando el dominio avanzado de variables CSS.
 * **Manejo de Estado y Rendimiento**: Implementación de Hooks personalizados (`useVideos`, `useDebounce`) para un filtrado y ordenamiento óptimo en el backend, limitando solicitudes de red.
 * **Modo Claro/Oscuro Real**: Integración impecable de *CSS Variables* gestionadas por localStorage para retener preferencias.
 * **Documentación Automática**: Backend documentado usando Swagger/OpenAPI.
@@ -92,14 +94,24 @@ make build
 make up
 ```
 
-Al terminar verás:
-```
+Al terminar verás (en Linux):
+```bash
 ╔══════════════════════════════════════════════╗
 ║        ✅  HypeBoard está listo!             ║
 ╠══════════════════════════════════════════════╣
 ║  🌐 Frontend  →  http://localhost:5173       ║
 ║  ⚙️  Backend   →  http://localhost:3001       ║
 ╚══════════════════════════════════════════════╝
+```
+
+Al terminar verás (en Windows):
+```bash
+------------------------------------------------
+         HypeBoard esta listo!
+------------------------------------------------
+   Frontend  ->  http://localhost:5173
+   Backend   ->  http://localhost:3001
+------------------------------------------------
 ```
 
 #### Comandos disponibles
@@ -112,9 +124,38 @@ Al terminar verás:
 | `make logs` | Muestra los logs en tiempo real |
 | `make clean` | Elimina contenedores, volúmenes e imágenes huérfanas |
 
+### ⭐ Opción B: Docker Directo (Sin Make)
+
+Si no tienes instalado `make` (común en Windows), puedes usar los comandos de Docker directamente:
+
+```bash
+# 1. Construir las imágenes
+docker compose build --no-cache
+
+# 2. Levantar la aplicación
+docker compose up -d
+```
+
+> **Nota:** Al usar esta opción, el cuadro de colores informativo **no aparecerá automáticamente** en la terminal. 
+
+Para confirmar que todo funciona, asegúrate de ver estos mensajes en tu terminal:
+- `✔ Container hypeboard_backend  Healthy`
+- `✔ Container hypeboard_frontend Started`
+
+Si los ves, el sistema ya está listo en:
+- **Frontend:** [http://localhost:5173](http://localhost:5173)
+- **Backend:** [http://localhost:3001](http://localhost:3001)
+
+#### Otros comandos útiles (Equivalentes a Make):
+| Acción | Comando Docker Directo |
+|---|---|
+| **Apagar todo** (`make down`) | `docker compose down` |
+| **Ver logs** (`make logs`) | `docker compose logs -f` |
+| **Limpiar todo** (`make clean`) | `docker compose down -v --remove-orphans` |
+
 ---
 
-### Opción B: Ejecución Manual
+### Opción C: Ejecución Manual
 
 #### 1. Clonar el repositorio
 

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import type { LayoutProps, SortKey } from '../types';
 import { YouTubeCard, YouTubeSkeletonCard } from './YouTubeCard';
 import './youtube.css';
@@ -32,6 +33,17 @@ export function YouTubeLayout({
     onSearch(localSearch);
   };
 
+  const logoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!logoRef.current) return;
+    gsap.fromTo(
+      logoRef.current,
+      { x: -20, autoAlpha: 0 },
+      { x: 0, autoAlpha: 1, duration: 0.6, ease: 'power3.out' }
+    );
+  }, []);
+
   const handleStyleToggle = () => {
     // Switch back to minimalist
     onStyleChange('minimalist');
@@ -46,7 +58,7 @@ export function YouTubeLayout({
           <button className="yt-icon-btn" onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Menú">
             <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 6H3V5h18v1zm0 5H3v1h18v-1zm0 6H3v1h18v-1z"></path></svg>
           </button>
-          <div className="yt-logo" onClick={handleStyleToggle} title="Volver a Minimalist" style={{ cursor: 'pointer' }}>
+          <div className="yt-logo" ref={logoRef} onClick={handleStyleToggle} title="Volver a Minimalist" style={{ cursor: 'pointer' }}>
             <svg viewBox="0 0 90 20" width="90" height="20">
               <path fill="#FF0000" d="M27.9727 3.12324C27.6435 1.89323 26.6768 0.926623 25.4468 0.597366C23.2197 2.24288e-07 14.285 0 14.285 0C14.285 0 5.35042 2.24288e-07 3.12323 0.597366C1.89323 0.926623 0.926623 1.89323 0.597366 3.12324C2.24288e-07 5.35042 0 10 0 10C0 10 2.24288e-07 14.6496 0.597366 16.8768C0.926623 18.1068 1.89323 19.0734 3.12323 19.4026C5.35042 20 14.285 20 14.285 20C14.285 20 23.2197 20 25.4468 19.4026C26.6768 19.0734 27.6435 18.1068 27.9727 16.8768C28.5701 14.6496 28.5701 10 28.5701 10C28.5701 10 28.5677 5.35042 27.9727 3.12324Z"></path>
               <path fill="#FFFFFF" d="M11.4253 14.2854L18.8477 10.0004L11.4253 5.71533V14.2854Z"></path>
@@ -91,6 +103,14 @@ export function YouTubeLayout({
               style={{ height: '36px' }}
             >
               ▶ YouTube
+            </button>
+            <button 
+              className="yt-chip" 
+              onClick={() => onStyleChange('netflix')}
+              title="Ir a Netflix"
+              style={{ height: '36px', background: 'transparent', border: '1px solid var(--yt-border)' }}
+            >
+              🎬 Netflix
             </button>
           </div>
 
@@ -174,9 +194,10 @@ export function YouTubeLayout({
               <div className="yt-grid">
                 {videos.map((video, index) => (
                   <YouTubeCard 
-                    key={video.id} 
+                    key={`${video.id}-yt`} 
                     video={video} 
                     rank={index + 1} 
+                    animationDelay={Math.min(index * 25, 150)}
                   />
                 ))}
               </div>

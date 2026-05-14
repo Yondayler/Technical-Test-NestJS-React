@@ -1,0 +1,375 @@
+/* netflix.css - PROFESSIONAL REFACTOR */
+:root {
+  --nf-red: #e50914;
+  --nf-black: #141414;
+  --nf-dark-grey: #181818;
+  --nf-transition: all 0.4s cubic-bezier(0.5, 0, 0.1, 1);
+}
+
+.netflix-layout {
+  background-color: var(--nf-black);
+  color: #fff;
+  min-height: 100vh;
+  font-family: 'Geist', -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Navbar ── */
+.nf-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  padding: 0 4%;
+  z-index: 1000;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+  transition: background-color 0.4s;
+}
+
+.nf-nav--scrolled {
+  background-color: var(--nf-black);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.nf-logo {
+  color: var(--nf-red);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 900;
+  text-decoration: none;
+  margin-right: 25px;
+  cursor: pointer;
+  letter-spacing: -1px;
+}
+
+.nf-nav__links {
+  display: flex;
+  list-style: none;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+}
+
+.nf-nav__link {
+  font-size: 0.85rem;
+  color: #e5e5e5;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nf-nav__link:hover { color: #b3b3b3; }
+.nf-nav__link--active { color: #fff; font-weight: 700; cursor: default; }
+
+.nf-nav__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Search Bar ── */
+.nf-search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  transition: var(--nf-transition);
+  cursor: pointer;
+}
+
+.nf-search-container--active {
+  background: rgba(0,0,0,0.75);
+  border: 1px solid #fff;
+  padding: 5px 10px;
+}
+
+.nf-search-input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  outline: none;
+  width: 0;
+  font-size: 0.85rem;
+  transition: width 0.4s ease;
+}
+
+.nf-search-container--active .nf-search-input {
+  width: 220px;
+}
+
+.nf-icon-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+/* ── Hero / Billboard ── */
+.nf-hero {
+  position: relative;
+  width: 100%;
+  min-height: 85vh;
+  margin-bottom: 20px;
+  background-color: var(--nf-black);
+}
+
+.nf-hero__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nf-hero__vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.1) 100%);
+  /* Agregamos blur al fondo para que el texto de placeholder.com no interfiera visualmente */
+  backdrop-filter: blur(8px);
+}
+
+.nf-hero__bottom-vignette {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 150px;
+  background-image: linear-gradient(to top, var(--nf-black) 0%, transparent 100%);
+}
+
+.nf-hero__content {
+  position: absolute;
+  bottom: 120px;
+  left: 4%;
+  max-width: 600px;
+  z-index: 10;
+}
+
+.nf-hero__title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  margin-bottom: 20px;
+  line-height: 1.1;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.nf-hero__desc {
+  font-size: clamp(1rem, 1.2vw, 1.2rem);
+  line-height: 1.5;
+  margin-bottom: 25px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.nf-hero__btns {
+  display: flex;
+  gap: 12px;
+}
+
+.nf-btn {
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.nf-btn--white { background: #fff; color: #000; }
+.nf-btn--white:hover { background: rgba(255,255,255,0.75); }
+
+.nf-btn--grey { background: rgba(109, 109, 110, 0.7); color: #fff; }
+.nf-btn--grey:hover { background: rgba(109, 109, 110, 0.4); }
+
+/* ── Rows & Grid ── */
+.nf-main {
+  padding: 0 4% 50px;
+  position: relative;
+  z-index: 20;
+}
+
+.nf-row__title {
+  font-size: clamp(1.2rem, 1.4vw, 1.5rem);
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.nf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 15px;
+  padding-bottom: 40px;
+}
+
+/* ── Card ── */
+.nf-card {
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.5, 0, 0.1, 1);
+  background: var(--nf-dark-grey);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.nf-card:hover {
+  transform: scale(1.08);
+  z-index: 100;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+}
+
+.nf-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nf-card__info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 40px 15px 15px;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 40%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nf-card:hover .nf-card__info {
+  opacity: 1;
+}
+
+.nf-card__title {
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+  font-weight: 700;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nf-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(0.7rem, 0.8vw, 0.9rem);
+  color: #46d369;
+  font-weight: 700;
+}
+
+.nf-card__meta span { color: #fff; font-weight: 400; }
+
+.nf-card__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: var(--nf-red);
+  z-index: 5;
+}
+
+/* ── Skeletons ── */
+.nf-skeleton-hero {
+  height: 85vh;
+  background: linear-gradient(90deg, #141414 25%, #1f1f1f 50%, #141414 75%);
+  background-size: 200% 100%;
+  animation: nf-shimmer 2s infinite linear;
+}
+
+.nf-skeleton-card {
+  aspect-ratio: 16/9;
+  background: #181818;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.nf-skeleton-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  transform: translateX(-100%);
+  animation: nf-shimmer 1.5s infinite;
+}
+
+@keyframes nf-shimmer {
+  to { transform: translateX(100%); }
+}
+
+@media (max-width: 768px) {
+  .nf-nav__links { display: none; }
+  .nf-hero__content { max-width: 90%; bottom: 80px; }
+  .nf-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+}
+
+/* ── Netflix Light Mode ── */
+[data-theme="light"] .netflix-layout {
+  --nf-black: #f8f9fa;
+  --nf-dark-grey: #e9ecef;
+  color: #111;
+}
+
+[data-theme="light"] .nf-nav {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.9) 0%, transparent 100%);
+}
+
+[data-theme="light"] .nf-nav--scrolled {
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .nf-nav__link {
+  color: #555;
+}
+
+[data-theme="light"] .nf-nav__link:hover { color: #222; }
+[data-theme="light"] .nf-nav__link--active { color: #000; }
+
+[data-theme="light"] .nf-search-input { color: #000; }
+[data-theme="light"] .nf-search-container--active { background: #fff; border-color: #000; }
+[data-theme="light"] .nf-icon-btn { color: #000; }
+
+[data-theme="light"] .nf-hero__title { text-shadow: none; color: #000; }
+[data-theme="light"] .nf-hero__desc { text-shadow: none; color: #333; }
+[data-theme="light"] .nf-hero__author { color: #333 !important; }
+
+[data-theme="light"] .nf-hero__vignette {
+  background: linear-gradient(90deg, rgba(248,249,250,0.95) 0%, rgba(248,249,250,0.7) 50%, rgba(248,249,250,0.1) 100%);
+}
+
+[data-theme="light"] .nf-card__info {
+  background: linear-gradient(to top, rgba(248,249,250,1) 0%, rgba(248,249,250,0.85) 50%, transparent 100%);
+}
+
+[data-theme="light"] .nf-card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .nf-card:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+[data-theme="light"] .nf-card__title { color: #000; }
+[data-theme="light"] .nf-card__meta span { color: #555; }
+
+[data-theme="light"] .nf-skeleton-hero {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+}
+
+[data-theme="light"] .nf-skeleton-card {
+  background: #e0e0e0;
+}

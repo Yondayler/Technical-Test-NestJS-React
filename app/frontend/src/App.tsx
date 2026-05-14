@@ -4,6 +4,7 @@ import { useVideos } from './hooks/useVideos';
 import { useDebounce } from './hooks/useDebounce';
 import { MinimalistLayout } from './themes/minimalist/MinimalistLayout';
 import { YouTubeLayout } from './themes/youtube/YouTubeLayout';
+import { NetflixLayout } from './themes/netflix/NetflixLayout';
 import type { SortKey, StyleKey } from './themes/types';
 
 // ── Hook de tema con persistencia en localStorage ──────────────
@@ -30,10 +31,12 @@ function useTheme() {
   return { theme, toggle };
 }
 
-function useStyle() {
+function useStyle(): [StyleKey, (s: StyleKey) => void] {
   const [style, setStyle] = useState<StyleKey>(() => {
-    const s = localStorage.getItem('hype-style');
-    if (s === 'minimalist' || s === 'youtube') return s as StyleKey;
+    const saved = localStorage.getItem('hype-style');
+    if (saved === 'minimalist' || saved === 'youtube' || saved === 'cyberpunk' || saved === 'netflix') {
+      return saved as StyleKey;
+    }
     return 'minimalist';
   });
 
@@ -72,6 +75,10 @@ function App() {
 
   if (style === 'youtube') {
     return <YouTubeLayout {...layoutProps} />;
+  }
+
+  if (style === 'netflix') {
+    return <NetflixLayout {...layoutProps} />;
   }
 
   // Fallback / Default

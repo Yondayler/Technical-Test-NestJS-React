@@ -4,12 +4,16 @@ import type { LayoutProps, SortKey, StyleKey } from '../types';
 import { VideoCard, CrownCard, SkeletonCard } from '../../components/VideoCard';
 
 // ── Título animado letra por letra ────────────────────────────
-function AnimatedTitle() {
+function AnimatedTitle({ styleKey }: { styleKey: string }) {
   const containerRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
     const chars = containerRef.current.querySelectorAll<HTMLElement>('.title-char');
+    
+    // Matar animaciones previas para evitar conflictos
+    gsap.killTweensOf(chars);
+    
     gsap.fromTo(
       chars,
       { y: 18, autoAlpha: 0 },
@@ -22,7 +26,7 @@ function AnimatedTitle() {
         delay: 0.1,
       },
     );
-  }, []);
+  }, [styleKey]);
 
   return (
     <h1
@@ -63,6 +67,8 @@ function MoonIcon() {
 const STYLES: { value: StyleKey; label: string; emoji: string }[] = [
   { value: 'minimalist', label: 'Minimalist', emoji: '✦' },
   { value: 'youtube',    label: 'YouTube',    emoji: '▶' },
+  { value: 'cyberpunk',  label: 'Cyberpunk',  emoji: '⚡' },
+  { value: 'netflix',    label: 'Netflix',    emoji: '🎬' },
 ];
 
 function StyleSwitcher({ styleKey, onChange }: { styleKey: StyleKey; onChange: (s: StyleKey) => void }) {
@@ -166,7 +172,7 @@ export function MinimalistLayout({
     <div className="app">
       <header className="header" role="banner">
         <p className="header__eyebrow">Cartelera de conocimiento</p>
-        <AnimatedTitle />
+        <AnimatedTitle styleKey={styleKey} />
         <p className="header__subtitle">
           Videos tech rankeados por engagement real, no por views.
         </p>
@@ -234,7 +240,7 @@ export function MinimalistLayout({
                 <div className="section-label crown-label" id="crown-heading">
                   Joya de la Corona
                 </div>
-                <CrownCard video={crownVideo} maxHype={maxHype} />
+                <CrownCard key={`crown-${styleKey}-${crownVideo.id}`} video={crownVideo} maxHype={maxHype} />
               </section>
             )}
 
@@ -258,7 +264,7 @@ export function MinimalistLayout({
                 <div className="video-grid" role="list">
                   {restVideos.map((video, i) => (
                     <div key={video.id} role="listitem">
-                      <VideoCard video={video} maxHype={maxHype} animationDelay={Math.min(i * 20, 60)} />
+                      <VideoCard key={`${video.id}-${styleKey}`} video={video} maxHype={maxHype} animationDelay={Math.min(i * 20, 60)} />
                     </div>
                   ))}
                 </div>

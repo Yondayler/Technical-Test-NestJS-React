@@ -1,12 +1,25 @@
-
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import type { Video } from '../../types/video';
 
 interface YouTubeCardProps {
   video: Video;
-  rank: number; // We'll use rank or hype to show something interesting
+  rank: number;
+  animationDelay?: number;
 }
 
-export function YouTubeCard({ video, rank }: YouTubeCardProps) {
+export function YouTubeCard({ video, rank, animationDelay = 0 }: YouTubeCardProps) {
+  const cardRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!cardRef.current) return;
+    gsap.fromTo(
+      cardRef.current,
+      { y: 12, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, duration: 0.4, delay: animationDelay / 1000, ease: 'power2.out' }
+    );
+  }, []);
+
   const correctedUrl = video.thumbnail.replace('https://via.placeholder.com', 'https://placehold.co');
   
   // Format hype to look like views (e.g. 0.308 -> 308K views)

@@ -764,6 +764,92 @@ body.theme-ready {
 
 
 /* ─────────────────────────────────────────────────────────────
+   STYLE: CYBERPUNK (Retro-Vaporwave Light / Deep Neon Dark)
+───────────────────────────────────────────────────────────── */
+[data-style="cyberpunk"] {
+  --font-body:      'Geist Mono', monospace;
+  --font-heading:   'Geist', sans-serif;
+  --card-radius:    0px;
+  
+  /* Modo Claro (Retro-Vaporwave) */
+  --bg:             #f5f5fb;
+  --bg-2:           #ffffff;
+  --bg-3:           #eaeaef;
+  
+  --text-primary:   #2a004a;
+  --text-secondary: #0055ff;
+  --text-tertiary:  #ff0080;
+  
+  --accent:         #ff0080;
+  --accent-bg:      rgba(255, 0, 128, 0.05);
+  --accent-border:  #ff0080;
+  
+  --blue:           #0055ff;
+  
+  --border:         rgba(0, 85, 255, 0.15);
+  --border-hover:   rgba(255, 0, 128, 0.4);
+  
+  --shadow-card:    4px 4px 0px rgba(0, 85, 255, 0.1);
+  --shadow-hover:   8px 8px 0px rgba(255, 0, 128, 0.15);
+  --shadow-crown:   4px 4px 0px rgba(255, 0, 128, 0.2), 0 0 0 1px #ff0080;
+}
+
+/* Override para Modo Oscuro (Deep Neon) */
+[data-style="cyberpunk"][data-theme="dark"] {
+  --bg:             #030305;
+  --bg-2:           #0a0a0f;
+  --bg-3:           #12121a;
+  
+  --text-primary:   #ffffff;
+  --text-secondary: #00ffff;
+  --text-tertiary:  #ff00ff;
+  
+  --accent:         #ff00ff;
+  --accent-bg:      rgba(255, 0, 255, 0.05);
+  --accent-border:  #ff00ff;
+  
+  --blue:           #00ffff;
+  
+  --border:         rgba(0, 255, 255, 0.2);
+  --border-hover:   rgba(0, 255, 255, 0.5);
+  
+  --shadow-card:    0 0 10px rgba(0, 255, 255, 0.1);
+  --shadow-hover:   0 0 20px rgba(0, 255, 255, 0.2), 0 0 40px rgba(255, 0, 255, 0.1);
+  --shadow-crown:   0 0 30px rgba(255, 0, 255, 0.3), 0 0 0 1px #ff00ff;
+}
+
+[data-style="cyberpunk"] body {
+  background-image: 
+    linear-gradient(rgba(0, 85, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 85, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+[data-style="cyberpunk"][data-theme="dark"] body {
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+[data-style="cyberpunk"] .video-card {
+  border-left: 4px solid var(--text-tertiary);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+}
+
+[data-style="cyberpunk"] .video-card--crown {
+  border: 1px solid var(--accent);
+  border-left: 6px solid var(--accent);
+  background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-3) 100%);
+}
+
+[data-style="cyberpunk"] .header__title {
+  text-transform: uppercase;
+  font-style: italic;
+  text-shadow: 2px 2px 0px var(--text-tertiary), -2px -2px 0px var(--text-secondary);
+  letter-spacing: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────
    RESPONSIVE
 ───────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
