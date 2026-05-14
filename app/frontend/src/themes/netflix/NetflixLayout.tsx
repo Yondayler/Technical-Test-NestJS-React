@@ -7,6 +7,7 @@ export function NetflixLayout({
   videos,
   loading,
   error,
+  refetch,
   onStyleChange,
   theme,
   toggleTheme,

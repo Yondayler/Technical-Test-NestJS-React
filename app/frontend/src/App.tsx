@@ -45,7 +45,7 @@ function useStyle(): [StyleKey, (s: StyleKey) => void] {
     localStorage.setItem('hype-style', style);
   }, [style]);
 
-  return { style, setStyle };
+  return [style, setStyle];
 }
 
 // ── App ────────────────────────────────────────────────────────
@@ -53,10 +53,9 @@ function App() {
   const [sort, setSort] = useState<SortKey>('hype-desc');
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 400);
-  const { theme, toggle } = useTheme();
-  const { style, setStyle } = useStyle();
-
   const { data: videos, loading, error, refetch } = useVideos({ sort, search: debouncedSearch });
+  const { theme, toggle } = useTheme();
+  const [style, setStyle] = useStyle();
 
   const layoutProps = {
     videos,

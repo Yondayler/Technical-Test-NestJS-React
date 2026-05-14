@@ -49,6 +49,38 @@ export function YouTubeLayout({
     onStyleChange('minimalist');
   };
 
+  if (error) {
+    return (
+      <div className="yt-layout" style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--yt-bg)' }}>
+        <header className="yt-header" style={{ position: 'static' }}>
+          <div className="yt-header-left">
+            <button className="yt-icon-btn" onClick={() => onStyleChange('minimalist')}>
+              <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 6H3V5h18v1zm0 5H3v1h18v-1zm0 6H3v1h18v-1z"></path></svg>
+            </button>
+            <div className="yt-logo" onClick={() => onStyleChange('minimalist')} style={{ cursor: 'pointer' }}>
+              <span style={{ fontSize: '1.2rem', fontWeight: 'bold', letterSpacing: '-0.5px', color: 'var(--yt-red)' }}>HypeTube</span>
+            </div>
+          </div>
+        </header>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px' }}>
+          <svg width="120" height="120" viewBox="0 0 24 24" fill="var(--yt-text-secondary)" style={{ opacity: 0.5, marginBottom: '20px' }}>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+          </svg>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: 'var(--yt-text)' }}>Algo salió mal</h2>
+          <p style={{ color: 'var(--yt-text-secondary)', marginBottom: '25px', maxWidth: '400px' }}>
+            No pudimos conectar con los servidores. Revisa tu conexión a internet.
+          </p>
+          <button 
+            onClick={refetch}
+            style={{ padding: '10px 24px', borderRadius: '18px', background: '#065fd4', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`yt-layout ${theme === 'dark' ? 'yt-dark' : 'yt-light'}`}>
       
@@ -180,13 +212,6 @@ export function YouTubeLayout({
                 {Array.from({ length: 12 }).map((_, i) => (
                   <YouTubeSkeletonCard key={i} />
                 ))}
-              </div>
-            )}
-
-            {!loading && error && (
-              <div className="yt-error">
-                <p>Ocurrió un problema de red [400]</p>
-                <button onClick={refetch}>Reintentar</button>
               </div>
             )}
 
