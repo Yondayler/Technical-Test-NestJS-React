@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import type { LayoutProps, StyleKey } from '../types';
+import type { LayoutProps } from '../types';
 import './netflix.css';
-
-const LOGO_URL = 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg';
 
 export function NetflixLayout({
   videos,
